@@ -16,14 +16,14 @@ namespace DestinyArmourSelector
         {
             switch (s)
             {
-                case "Arc":
-                    return Element.Arc;
-                case "Solar":
-                    return Element.Solar;
-                case "Void":
-                    return Element.Void;
-                default:
-                    return Element.None;
+            case "Arc":
+                return Element.Arc;
+            case "Solar":
+                return Element.Solar;
+            case "Void":
+                return Element.Void;
+            default:
+                return Element.None;
             }
         }
     }

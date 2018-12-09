@@ -16,14 +16,14 @@ namespace DestinyArmourSelector
         {
             switch (s)
             {
-                case "Hunter":
-                    return CharacterClass.Hunter;
-                case "Titan":
-                    return CharacterClass.Titan;
-                case "Warlock":
-                    return CharacterClass.Warlock;
-                default:
-                    return CharacterClass.Unknown;
+            case "Hunter":
+                return CharacterClass.Hunter;
+            case "Titan":
+                return CharacterClass.Titan;
+            case "Warlock":
+                return CharacterClass.Warlock;
+            default:
+                return CharacterClass.Unknown;
             }
         }
 
@@ -31,14 +31,14 @@ namespace DestinyArmourSelector
         {
             switch (c)
             {
-                case CharacterClass.Hunter:
-                    return "Hunter";
-                case CharacterClass.Titan:
-                    return "Titan";
-                case CharacterClass.Warlock:
-                    return "Warlock";
-                default:
-                    return "Unknown";
+            case CharacterClass.Hunter:
+                return "Hunter";
+            case CharacterClass.Titan:
+                return "Titan";
+            case CharacterClass.Warlock:
+                return "Warlock";
+            default:
+                return "Unknown";
             }
         }
     }

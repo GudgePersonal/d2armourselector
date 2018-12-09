@@ -18,18 +18,18 @@ namespace DestinyArmourSelector
         {
             switch (s)
             {
-                case "Helmet":
-                    return ArmourType.Helmet;
-                case "Gloves":
-                    return ArmourType.Gloves;
-                case "Chest":
-                    return ArmourType.Chest;
-                case "Legs":
-                    return ArmourType.Legs;
-                case "ClassItem":
-                    return ArmourType.ClassItem;
-                default:
-                    return ArmourType.Unknown;
+            case "Helmet":
+                return ArmourType.Helmet;
+            case "Gloves":
+                return ArmourType.Gloves;
+            case "Chest":
+                return ArmourType.Chest;
+            case "Legs":
+                return ArmourType.Legs;
+            case "ClassItem":
+                return ArmourType.ClassItem;
+            default:
+                return ArmourType.Unknown;
             }
         }
 
@@ -37,18 +37,18 @@ namespace DestinyArmourSelector
         {
             switch (c)
             {
-                case ArmourType.Helmet:
-                    return "Helmet";
-                case ArmourType.Gloves:
-                    return "Gloves";
-                case ArmourType.Chest:
-                    return "Chest";
-                case ArmourType.Legs:
-                    return "Legs";
-                case ArmourType.ClassItem:
-                    return "ClassItem";
-                default:
-                    return "Unknown";
+            case ArmourType.Helmet:
+                return "Helmet";
+            case ArmourType.Gloves:
+                return "Gloves";
+            case ArmourType.Chest:
+                return "Chest";
+            case ArmourType.Legs:
+                return "Legs";
+            case ArmourType.ClassItem:
+                return "ClassItem";
+            default:
+                return "Unknown";
             }
         }
     }
