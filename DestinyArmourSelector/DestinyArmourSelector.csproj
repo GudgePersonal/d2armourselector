@@ -48,6 +48,7 @@
     <Compile Include="ArmourPieceSelector.cs" />
     <Compile Include="ArmourType.cs" />
     <Compile Include="CharacterClass.cs" />
+    <Compile Include="ArmourPieceCreator.cs" />
     <Compile Include="CsvReader.cs" />
     <Compile Include="Element.cs" />
     <Compile Include="PerkGroup.cs" />

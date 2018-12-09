@@ -2,12 +2,6 @@
 
 namespace DestinyArmourSelector
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-
     public enum ArmourType
     {
         Unknown,
@@ -22,7 +16,7 @@ namespace DestinyArmourSelector
     {
         public static ArmourType FromString(string s)
         {
-            switch(s)
+            switch (s)
             {
             case "Helmet":
                 return ArmourType.Helmet;
@@ -39,7 +33,7 @@ namespace DestinyArmourSelector
             }
         }
 
-        public static  string ToString(ArmourType c)
+        public static string ToString(ArmourType c)
         {
             switch (c)
             {
