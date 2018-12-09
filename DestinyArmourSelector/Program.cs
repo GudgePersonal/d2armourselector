@@ -4,8 +4,6 @@ namespace DestinyArmourSelector
 {
     using System;
     using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
     using System.Threading.Tasks;
 
     class Program
@@ -25,7 +23,7 @@ namespace DestinyArmourSelector
             {
                 Help();
             }
-         }
+        }
 
         public static void Help()
         {
@@ -39,7 +37,7 @@ namespace DestinyArmourSelector
                 {
                     _inputFileName = args[++i];
                 }
-                else if("-type".Equals(args[i], StringComparison.OrdinalIgnoreCase) && i + 1 < args.Length)
+                else if ("-type".Equals(args[i], StringComparison.OrdinalIgnoreCase) && i + 1 < args.Length)
                 {
                     _armourType = ArmourTypeHelpers.FromString(args[++i]);
                 }
@@ -50,32 +48,12 @@ namespace DestinyArmourSelector
 
         public async Task<bool> Run()
         {
+            var creator = new ArmourPieceCreator(_inputFileName, _armourType);
+
             ArmourPieceFactory factory = ArmourPieceFactory.Create(_armourType);
-            IList<ArmourPiece> armourPieces = new List<ArmourPiece>();
-
-            using (TextReader reader = new StreamReader(_inputFileName))
-            {
-                var csvReader = new CsvReader(reader);
-
-                IEnumerable<string> headerTokens = await csvReader.Read();
-                IEnumerable<string> tokens;
-                int i = 1;
-
-                do
-                {
-                    tokens = await csvReader.Read();
-
-                    if (tokens.Any())
-                    {
-                        ArmourPiece armourPiece = factory.CreateArmourPiece(++i, tokens);
-                        armourPieces.Add(armourPiece);
-                    }
-                }
-                while (tokens != null && tokens.Any());
-            }
+            IList<ArmourPiece> armourPieces = await creator.CreateArmourPieces();
 
             var selector = new ArmourPieceSelector();
-
             selector.ProcessArmourPieces(armourPieces);
 
             return true;
