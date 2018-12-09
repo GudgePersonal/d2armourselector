@@ -8,7 +8,7 @@ namespace DestinyArmourSelector
 
     class CsvReader
     {
-        private static string[] _empty = new string[] { };
+        private static readonly string[] _empty = new string[] { };
         private TextReader _reader;
 
         public CsvReader(TextReader reader)

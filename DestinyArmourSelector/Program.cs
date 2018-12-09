@@ -54,13 +54,16 @@ namespace DestinyArmourSelector
             ArmourPieceFactory factory = ArmourPieceFactory.Create(_armourType);
             IList<ArmourPiece> armourPieces = await creator.CreateArmourPieces();
 
-            var selector = new ArmourPieceSelector();
-
-            (IEnumerable<ArmourPiece> toKeep, IEnumerable<ArmourPiece> toDelete) hunterPieces = selector.ProcessArmourPieces(armourPieces, CharacterClass.Hunter);
+            var hunterSelector = new ArmourPieceSelector(armourPieces, CharacterClass.Hunter);
+            (IEnumerable<ArmourPiece> toKeep, IEnumerable<ArmourPiece> toDelete) hunterPieces = hunterSelector.ProcessArmourPieces();
             OutputResults(hunterPieces.toKeep, hunterPieces.toDelete);
-            (IEnumerable<ArmourPiece> toKeep, IEnumerable<ArmourPiece> toDelete) titanPieces = selector.ProcessArmourPieces(armourPieces, CharacterClass.Titan);
+
+            var titanSelector = new ArmourPieceSelector(armourPieces, CharacterClass.Titan);
+            (IEnumerable<ArmourPiece> toKeep, IEnumerable<ArmourPiece> toDelete) titanPieces = titanSelector.ProcessArmourPieces();
             OutputResults(titanPieces.toKeep, titanPieces.toDelete);
-            (IEnumerable<ArmourPiece> toKeep, IEnumerable<ArmourPiece> toDelete) warlockPieces = selector.ProcessArmourPieces(armourPieces, CharacterClass.Warlock);
+
+            var warlockSelector = new ArmourPieceSelector(armourPieces, CharacterClass.Warlock);
+            (IEnumerable<ArmourPiece> toKeep, IEnumerable<ArmourPiece> toDelete) warlockPieces = warlockSelector.ProcessArmourPieces();
             OutputResults(warlockPieces.toKeep, warlockPieces.toDelete);
 
             return true;
