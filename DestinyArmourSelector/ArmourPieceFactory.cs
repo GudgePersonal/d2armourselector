@@ -7,7 +7,7 @@ namespace DestinyArmourSelector
 
     public class ArmourPieceFactory
     {
-        private ArmourType _armourType = ArmourType.Unknown;
+        private readonly ArmourType _armourType = ArmourType.Unknown;
 
         public static ArmourPieceFactory Create(ArmourType armourType)
         {

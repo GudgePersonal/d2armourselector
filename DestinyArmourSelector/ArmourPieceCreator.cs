@@ -9,8 +9,8 @@ namespace DestinyArmourSelector
 
     class ArmourPieceCreator
     {
-        private ArmourType _armourType = ArmourType.Unknown;
-        private string _fileName = string.Empty;
+        private readonly ArmourType _armourType = ArmourType.Unknown;
+        private readonly string _fileName = string.Empty;
 
         public ArmourPieceCreator(string fileName, ArmourType type)
         {

@@ -2,24 +2,32 @@
 
 namespace DestinyArmourSelector
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
 
     class ArmourPieceSelector
     {
-        public (IEnumerable<ArmourPiece> tokeep, IEnumerable<ArmourPiece> toDelete) ProcessArmourPieces(IList<ArmourPiece> pieces, CharacterClass characterClass)
+        private HashSet<string> _perksFound = new HashSet<string>();
+        private IEnumerable<ArmourPiece> _pieces;
+        private readonly CharacterClass _characterClass = CharacterClass.Unknown;
+
+        public ArmourPieceSelector(IEnumerable<ArmourPiece> pieces, CharacterClass characterClass)
         {
-            IList<ArmourPiece> armourPieces = pieces.Where(x => x.Class == characterClass).ToList();
+            _pieces = pieces;
+            _characterClass = characterClass;
+        }
+
+        public (IEnumerable<ArmourPiece> tokeep, IEnumerable<ArmourPiece> toDelete) ProcessArmourPieces()
+        {
+            IList<ArmourPiece> armourPieces = _pieces.Where(x => x.Class == _characterClass).ToList();
 
             return ProcessArmourPiecesInternal(armourPieces);
         }
 
         private (IEnumerable<ArmourPiece> tokeep, IEnumerable<ArmourPiece> toDelete) ProcessArmourPiecesInternal(IList<ArmourPiece> pieces)
         {
-            HashSet<ArmourPiece> keepers = new HashSet<ArmourPiece>();
-            HashSet<ArmourPiece> deleters = new HashSet<ArmourPiece>();
-            HashSet<string> itemNamesUsed = new HashSet<string>();
+            var toKeep = new List<ArmourPiece>();
+            var toDelete = new List<ArmourPiece>();
 
             pieces = pieces.
                 OrderByDescending(x => x.Synergy.Length).
@@ -28,63 +36,48 @@ namespace DestinyArmourSelector
 
             foreach (ArmourPiece piece in pieces)
             {
-                if (!itemNamesUsed.Contains(piece.Name))
+                if (ShouldDelete(piece))
                 {
-                    keepers.Add(piece);
-                    itemNamesUsed.Add(piece.Name);
-                }
-            }
-
-            // Remove keepers from pieces
-            pieces = pieces.Where(x => !keepers.Contains(x)).ToList();
-
-            HashSet<string> perksFound = new HashSet<string>();
-
-            foreach (ArmourPiece piece in keepers)
-            {
-                if (ShouldInclude(piece)) // Don't add perks from exotics or low light items into the pool
-                {
-                    perksFound.Add(piece.PrimaryPerks.Perk1);
-                    perksFound.Add(piece.PrimaryPerks.Perk2);
-                    perksFound.Add(piece.PrimaryPerks.Perk3);
-
-                    perksFound.Add(piece.SecondaryPerks.Perk1);
-                    perksFound.Add(piece.SecondaryPerks.Perk2);
-                }
-            }
-
-            foreach (ArmourPiece piece in pieces)
-            {
-                if (perksFound.Contains(piece.PrimaryPerks.Perk1) &&
-                   perksFound.Contains(piece.PrimaryPerks.Perk2) &&
-                   perksFound.Contains(piece.PrimaryPerks.Perk3) &&
-                   perksFound.Contains(piece.SecondaryPerks.Perk1) &&
-                   perksFound.Contains(piece.SecondaryPerks.Perk2))
-                {
-                    deleters.Add(piece);
+                    toDelete.Add(piece);
                 }
                 else
                 {
-                    keepers.Add(piece);
+                    toKeep.Add(piece);
 
-                    if (ShouldInclude(piece)) // Don't add perks from exotics or low light items into the pool
+                    if (ShouldIncludePerks(piece)) // Don't add perks from exotics or low light items into the pool
                     {
-                        perksFound.Add(piece.PrimaryPerks.Perk1);
-                        perksFound.Add(piece.PrimaryPerks.Perk2);
-                        perksFound.Add(piece.PrimaryPerks.Perk3);
-
-                        perksFound.Add(piece.SecondaryPerks.Perk1);
-                        perksFound.Add(piece.SecondaryPerks.Perk2);
+                        AddPerks(piece);
                     }
                 }
             }
 
-            return (keepers, deleters);
+            return (toKeep, toDelete);
         }
 
-        
+        private void AddPerks(ArmourPiece piece)
+        {
+            _perksFound.Add(piece.Name);
 
-        private bool ShouldInclude(ArmourPiece piece)
+            _perksFound.Add(piece.PrimaryPerks.Perk1);
+            _perksFound.Add(piece.PrimaryPerks.Perk2);
+            _perksFound.Add(piece.PrimaryPerks.Perk3);
+
+            _perksFound.Add(piece.SecondaryPerks.Perk1);
+            _perksFound.Add(piece.SecondaryPerks.Perk2);
+        }
+
+        private bool ShouldDelete(ArmourPiece piece)
+        {
+            return
+                _perksFound.Contains(piece.Name) &&
+                _perksFound.Contains(piece.PrimaryPerks.Perk1) &&
+                _perksFound.Contains(piece.PrimaryPerks.Perk2) &&
+                _perksFound.Contains(piece.PrimaryPerks.Perk3) &&
+                _perksFound.Contains(piece.SecondaryPerks.Perk1) &&
+                _perksFound.Contains(piece.SecondaryPerks.Perk2);
+        }
+
+        private bool ShouldIncludePerks(ArmourPiece piece)
         {
             if (piece.Name.StartsWith("Memory Of Cayde "))
             {
