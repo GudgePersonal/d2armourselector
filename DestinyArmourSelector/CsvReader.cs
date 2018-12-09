@@ -1,4 +1,6 @@
-﻿namespace DestinyArmourSelector
+﻿// Copyright Small & Fast 2018
+
+namespace DestinyArmourSelector
 {
     using System.Collections.Generic;
     using System.IO;

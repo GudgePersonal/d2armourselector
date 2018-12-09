@@ -1,7 +1,9 @@
-﻿using System.Text;
+﻿// Copyright Small & Fast 2018
 
 namespace DestinyArmourSelector
 {
+    using System.Text;
+
     public class ArmourPiece
     {
         public ArmourPiece(ArmourType armourType)

@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="ArmourPiece.cs" />
     <Compile Include="ArmourPieceFactory.cs" />
+    <Compile Include="ArmourPieceSelector.cs" />
     <Compile Include="ArmourType.cs" />
     <Compile Include="CharacterClass.cs" />
     <Compile Include="CsvReader.cs" />
