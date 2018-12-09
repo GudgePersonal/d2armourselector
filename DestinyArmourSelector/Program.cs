@@ -4,6 +4,7 @@ namespace DestinyArmourSelector
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
 
     class Program
@@ -54,7 +55,41 @@ namespace DestinyArmourSelector
             IList<ArmourPiece> armourPieces = await creator.CreateArmourPieces();
 
             var selector = new ArmourPieceSelector();
-            selector.ProcessArmourPieces(armourPieces);
+
+            (IEnumerable<ArmourPiece> toKeep, IEnumerable<ArmourPiece> toDelete) hunterPieces = selector.ProcessArmourPieces(armourPieces, CharacterClass.Hunter);
+            OutputResults(hunterPieces.toKeep, hunterPieces.toDelete);
+            (IEnumerable<ArmourPiece> toKeep, IEnumerable<ArmourPiece> toDelete) titanPieces = selector.ProcessArmourPieces(armourPieces, CharacterClass.Titan);
+            OutputResults(titanPieces.toKeep, titanPieces.toDelete);
+            (IEnumerable<ArmourPiece> toKeep, IEnumerable<ArmourPiece> toDelete) warlockPieces = selector.ProcessArmourPieces(armourPieces, CharacterClass.Warlock);
+            OutputResults(warlockPieces.toKeep, warlockPieces.toDelete);
+
+            return true;
+        }
+
+        private bool OutputResults(IEnumerable<ArmourPiece> keep, IEnumerable<ArmourPiece> delete)
+        {
+            keep = keep.OrderBy(x => x.RowNumber);
+            delete = delete.OrderBy(x => x.RowNumber);
+
+            Console.WriteLine($"Keep: {keep.Count()}");
+            Console.WriteLine();
+
+            foreach (ArmourPiece piece in keep)
+            {
+                Console.WriteLine(piece.ToString());
+            }
+
+            Console.WriteLine();
+
+            Console.WriteLine($"Delete: {delete.Count()}");
+            Console.WriteLine();
+
+            foreach (ArmourPiece piece in delete)
+            {
+                Console.WriteLine(piece.ToString());
+            }
+
+            Console.WriteLine();
 
             return true;
         }
