@@ -8,20 +8,14 @@ namespace DestinyArmourSelector
 
     class ArmourPieceSelector
     {
-        public bool ProcessArmourPieces(IList<ArmourPiece> pieces)
+        public (IEnumerable<ArmourPiece> tokeep, IEnumerable<ArmourPiece> toDelete) ProcessArmourPieces(IList<ArmourPiece> pieces, CharacterClass characterClass)
         {
-            IList<ArmourPiece> hunterArmour = pieces.Where(x => x.Class == CharacterClass.Hunter).ToList();
-            IList<ArmourPiece> titanArmour = pieces.Where(x => x.Class == CharacterClass.Titan).ToList();
-            IList<ArmourPiece> warlockArmour = pieces.Where(x => x.Class == CharacterClass.Warlock).ToList();
+            IList<ArmourPiece> armourPieces = pieces.Where(x => x.Class == characterClass).ToList();
 
-            ProcessArmourPiecesInternal(hunterArmour);
-            ProcessArmourPiecesInternal(titanArmour);
-            ProcessArmourPiecesInternal(warlockArmour);
-
-            return true;
+            return ProcessArmourPiecesInternal(armourPieces);
         }
 
-        private bool ProcessArmourPiecesInternal(IList<ArmourPiece> pieces)
+        private (IEnumerable<ArmourPiece> tokeep, IEnumerable<ArmourPiece> toDelete) ProcessArmourPiecesInternal(IList<ArmourPiece> pieces)
         {
             HashSet<ArmourPiece> keepers = new HashSet<ArmourPiece>();
             HashSet<ArmourPiece> deleters = new HashSet<ArmourPiece>();
@@ -85,38 +79,10 @@ namespace DestinyArmourSelector
                 }
             }
 
-            OutputKeepersAndDeleters(keepers, deleters);
-
-            return true;
+            return (keepers, deleters);
         }
 
-        private bool OutputKeepersAndDeleters(IEnumerable<ArmourPiece> keep, IEnumerable<ArmourPiece> delete)
-        {
-            keep = keep.OrderBy(x => x.RowNumber);
-            delete = delete.OrderBy(x => x.RowNumber);
-
-            Console.WriteLine($"Keep: {keep.Count()}");
-            Console.WriteLine();
-
-            foreach (ArmourPiece piece in keep)
-            {
-                Console.WriteLine(piece.ToString());
-            }
-
-            Console.WriteLine();
-
-            Console.WriteLine($"Delete: {delete.Count()}");
-            Console.WriteLine();
-
-            foreach (ArmourPiece piece in delete)
-            {
-                Console.WriteLine(piece.ToString());
-            }
-
-            Console.WriteLine();
-
-            return true;
-        }
+        
 
         private bool ShouldInclude(ArmourPiece piece)
         {
