@@ -17,10 +17,13 @@ namespace DestinyArmourSelector
             switch (s)
             {
             case "Hunter":
+            case "hunter":
                 return CharacterClass.Hunter;
             case "Titan":
+            case "titan":
                 return CharacterClass.Titan;
             case "Warlock":
+            case "warlock":
                 return CharacterClass.Warlock;
             default:
                 return CharacterClass.Unknown;

@@ -50,8 +50,6 @@ namespace DestinyArmourSelector
         public async Task<bool> Run()
         {
             var creator = new ArmourPieceCreator(_inputFileName, _armourType);
-
-            ArmourPieceFactory factory = ArmourPieceFactory.Create(_armourType);
             IList<ArmourPiece> armourPieces = await creator.CreateArmourPieces();
 
             var hunterSelector = new ArmourPieceSelector(armourPieces, CharacterClass.Hunter);

@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArmourPiece.cs" />
+    <Compile Include="DIMArmourPieceFactory.cs" />
     <Compile Include="ArmourPieceFactory.cs" />
     <Compile Include="ArmourPieceSelector.cs" />
     <Compile Include="ArmourType.cs" />
@@ -52,6 +53,7 @@
     <Compile Include="ArmourPieceCreator.cs" />
     <Compile Include="CsvReader.cs" />
     <Compile Include="Element.cs" />
+    <Compile Include="IArmourPieceFactory.cs" />
     <Compile Include="PerkGroup.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
