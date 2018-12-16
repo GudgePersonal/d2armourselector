@@ -9,7 +9,9 @@ namespace DestinyArmourSelector
     public class DIMArmourPieceFactory : IArmourPieceFactory
     {
         private readonly ArmourType _armourType = ArmourType.Unknown;
+        private static string _unflinchingAimPrefix = "Unflinching ";
 
+        // HashSets used for finding various types of perks
         private static HashSet<string> _basePerkStrings = new HashSet<string>
         {
             "Plasteel Reinforcement Mod", "Restorative Mod", "Mobility Enhancement Mod"
@@ -48,6 +50,151 @@ namespace DestinyArmourSelector
             "Better Already",
             "Recuperation",
             "Absolution"
+        };
+
+        static readonly HashSet<string> _secondaryPerkStrings = new HashSet<string>
+        {
+            "Finder",
+            "Reserves",
+            "Scavenger"
+        };
+
+
+        // HashSets used for tracking perk synergy for each weapon type
+        private static readonly HashSet<string> _autoRifleSynergy = new HashSet<string>
+        {
+            "Auto Rifle",
+            "Kinetic",
+            "Energy",
+            "Scatter",
+            "Rifle"
+        };
+
+        private static readonly HashSet<string> _scoutRifleSynergy = new HashSet<string>
+        {
+            "Scout Rifle",
+            "Kinetic",
+            "Energy",
+            "Precision",
+            "Rifle"
+        };
+
+        private static readonly HashSet<string> _pulseRifleSynergy = new HashSet<string>
+        {
+            "Scout Rifle",
+            "Kinetic",
+            "Energy",
+            "Scatter",
+            "Rifle"
+        };
+
+        private static readonly HashSet<string> _handCannonSynergy = new HashSet<string>
+        {
+            "Hand Cannon",
+            "Kinetic",
+            "Energy",
+            "Precision",
+            "Light"
+        };
+
+        private static readonly HashSet<string> _subMachineGunSynergy = new HashSet<string>
+        {
+            "Submachine Gun",
+            "Kinetic",
+            "Energy",
+            "Scatter",
+            "Light"
+        };
+
+        private static readonly HashSet<string> _sidearmSynergy = new HashSet<string>
+        {
+            "Sidearm",
+            "Kinetic",
+            "Energy",
+            "Scatter",
+            "Light"
+        };
+
+        private static readonly HashSet<string> _bowSynergy = new HashSet<string>
+        {
+            "Bow",
+            "Kinetic",
+            "Energy",
+            "Precision",
+            "Oversize"
+        };
+
+        private static readonly HashSet<string> _shotgunSynergy = new HashSet<string>
+        {
+            "Shotgun",
+            "Kinetic",
+            "Energy",
+            "Power",
+            "Pump Action",
+            "Oversize"
+        };
+
+        private static readonly HashSet<string> _grenadeLauncherSynergy = new HashSet<string>
+        {
+            "Grenade Launcher",
+            "Kinetic",
+            "Energy",
+            "Power",
+            "Oversize"
+        };
+
+        private static readonly HashSet<string> _fusionRifleSynergy = new HashSet<string>
+        {
+            "Fusion Rifle",
+            "Energy",
+            "Scatter",
+            "Rifle"
+        };
+
+
+        private static readonly HashSet<string> _sniperRifleSynergy = new HashSet<string>
+        {
+            "Sniper Rifle",
+            "Kinetic",
+            "Energy",
+            "Power",
+            "Precision",
+            "Rifle"
+        };
+
+        private static readonly HashSet<string> _traceRifleSynergy = new HashSet<string>
+        {
+            "Trace Rifle",
+            "Energy",
+            "Precision",
+            "Rifle"
+        };
+
+        private static readonly HashSet<string> _swordSynergy = new HashSet<string>
+        {
+            "Sword",
+            "Power"
+        };
+
+        private static readonly HashSet<string> _rocketLauncherSynergy = new HashSet<string>
+        {
+            "Rocket Launcher",
+            "Power",
+            "Oversize"
+        };
+
+        private static readonly HashSet<string> _linearFusionSynergy = new HashSet<string>
+        {
+            "Linear Fusion",
+            "Power",
+            "Precision",
+            "Rifle"
+        };
+
+        private static readonly HashSet<string> _machineGunSynergy = new HashSet<string>
+        {
+            "Machine Gun",
+            "Power",
         };
 
         private static readonly HashSet<string> _helmetPrimaryPerkStrings = new HashSet<string>
@@ -96,12 +243,6 @@ namespace DestinyArmourSelector
             "Absolution"
         };
 
-        static readonly HashSet<string> _secondaryPerkStrings = new HashSet<string>
-        {
-            "Finder",
-            "Reserves",
-            "Scavenger"
-        };
 
         private static readonly HashSet<string> _kineticWeapons = new HashSet<string>
         {
@@ -129,7 +270,8 @@ namespace DestinyArmourSelector
             "Shotgun",
             "Grenade Launcher",
             "Fusion Rifle",
-            "Sniper Rifle"
+            "Sniper Rifle",
+            "Trace Rifle"
         };
 
         private static readonly HashSet<string> _powerWeapons = new HashSet<string>
@@ -192,8 +334,8 @@ namespace DestinyArmourSelector
         private static readonly HashSet<string> _scatterProjectileWeapons = new HashSet<string>
         {
             "Auto Rifle",
-            "Submachine Gun",
             "Pulse Rifle",
+            "Submachine Gun",
             "Sidearm",
             "Fusion Rifle"
         };
@@ -260,7 +402,7 @@ namespace DestinyArmourSelector
 
             string[] perkTokens = temp.ToArray();
             
-            TrimTrailingAsterisks(perkTokens);
+            TrimPerkTokens(perkTokens);
 
             int indexOfFirstBasePerk = FindIndexOfFirstBasePerk(perkTokens);
             int indexOfLastBasePerk = FindIndexOfLastBasePerk(indexOfFirstBasePerk, perkTokens);
@@ -343,6 +485,7 @@ namespace DestinyArmourSelector
                 Synergy = synergy
             };
         }
+
 
         private string CalculateSynergy(PerkGroup primaryPerks, PerkGroup secondaryPerks)
         {
@@ -543,7 +686,7 @@ namespace DestinyArmourSelector
             return 0;
         }
 
-        private void TrimTrailingAsterisks(string[] perkTokens)
+        private void TrimPerkTokens(string[] perkTokens)
         {
             for (int i = 0; i < perkTokens.Length; ++i)
             {
