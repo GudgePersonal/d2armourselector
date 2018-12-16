@@ -2,14 +2,14 @@
 
 namespace DestinyArmourSelector
 {
-    using System;
     using System.Collections.Generic;
     using System.Text;
 
     public class DIMArmourPieceFactory : IArmourPieceFactory
     {
         private readonly ArmourType _armourType = ArmourType.Unknown;
-        private static string _unflinchingAimPrefix = "Unflinching ";
+        private static readonly string _enhancedPrefix = "Enhanced ";
+        private static readonly string _unflinchingAimPrefix = "Unflinching ";
 
         // HashSets used for finding various types of perks
         private static HashSet<string> _basePerkStrings = new HashSet<string>
@@ -27,7 +27,7 @@ namespace DestinyArmourSelector
             "Light Reactor",
             "Pump Action",
             "Remote Connection",
-            // Glove
+            // Gloves
             "Loader",
             "Fastball",
             "Momentum Transfer",
@@ -52,13 +52,12 @@ namespace DestinyArmourSelector
             "Absolution"
         };
 
-        static readonly HashSet<string> _secondaryPerkStrings = new HashSet<string>
+        private static readonly HashSet<string> _secondaryPerkStrings = new HashSet<string>
         {
             "Finder",
             "Reserves",
             "Scavenger"
         };
-
 
         // HashSets used for tracking perk synergy for each weapon type
         private static readonly HashSet<string> _autoRifleSynergy = new HashSet<string>
@@ -94,7 +93,7 @@ namespace DestinyArmourSelector
             "Kinetic",
             "Energy",
             "Precision",
-            "Light"
+            "Light Arms"
         };
 
         private static readonly HashSet<string> _subMachineGunSynergy = new HashSet<string>
@@ -103,7 +102,7 @@ namespace DestinyArmourSelector
             "Kinetic",
             "Energy",
             "Scatter",
-            "Light"
+            "Light Arms"
         };
 
         private static readonly HashSet<string> _sidearmSynergy = new HashSet<string>
@@ -112,7 +111,7 @@ namespace DestinyArmourSelector
             "Kinetic",
             "Energy",
             "Scatter",
-            "Light"
+            "Light Arms"
         };
 
         private static readonly HashSet<string> _bowSynergy = new HashSet<string>
@@ -140,7 +139,8 @@ namespace DestinyArmourSelector
             "Kinetic",
             "Energy",
             "Power",
-            "Oversize"
+            "Oversize",
+            "Heavy Lifting"
         };
 
         private static readonly HashSet<string> _fusionRifleSynergy = new HashSet<string>
@@ -148,9 +148,9 @@ namespace DestinyArmourSelector
             "Fusion Rifle",
             "Energy",
             "Scatter",
-            "Rifle"
+            "Rifle",
+            "Light Reactor",
         };
-
 
         private static readonly HashSet<string> _sniperRifleSynergy = new HashSet<string>
         {
@@ -159,7 +159,8 @@ namespace DestinyArmourSelector
             "Energy",
             "Power",
             "Precision",
-            "Rifle"
+            "Rifle",
+            "Remote Connection",
         };
 
         private static readonly HashSet<string> _traceRifleSynergy = new HashSet<string>
@@ -173,14 +174,16 @@ namespace DestinyArmourSelector
         private static readonly HashSet<string> _swordSynergy = new HashSet<string>
         {
             "Sword",
-            "Power"
+            "Power",
+            "Heavy Lifting"
         };
 
         private static readonly HashSet<string> _rocketLauncherSynergy = new HashSet<string>
         {
             "Rocket Launcher",
             "Power",
-            "Oversize"
+            "Oversize",
+            "Heavy Lifting"
         };
 
         private static readonly HashSet<string> _linearFusionSynergy = new HashSet<string>
@@ -188,62 +191,100 @@ namespace DestinyArmourSelector
             "Linear Fusion",
             "Power",
             "Precision",
-            "Rifle"
+            "Rifle",
+            "Heavy Lifting"
         };
 
         private static readonly HashSet<string> _machineGunSynergy = new HashSet<string>
         {
             "Machine Gun",
             "Power",
+            "Heavy Lifting"
         };
 
-        private static readonly HashSet<string> _helmetPrimaryPerkStrings = new HashSet<string>
+        private static readonly Dictionary<string, HashSet<string>> _weaponTypeSynergies = new Dictionary<string, HashSet<string>>
         {
-            "Targeting",
-            "Ashes to Assets",
-            "Hands-On",
-            "Heavy Lifting",
+            { "Auto Rifle", _autoRifleSynergy },
+            { "Scout Rifle", _scoutRifleSynergy },
+            { "Pulse Rifle", _pulseRifleSynergy },
+            { "Hand Cannon", _handCannonSynergy },
+            { "Submachine Gun", _subMachineGunSynergy },
+            { "Sidearm", _sidearmSynergy },
+            { "Bow", _bowSynergy },
+            { "Arrow", _bowSynergy },
+            { "Shotgun", _shotgunSynergy },
+            { "Grenade Launcher", _grenadeLauncherSynergy },
+            { "Fusion Rifle", _fusionRifleSynergy },
+            { "Sniper Rifle", _sniperRifleSynergy },
+            { "Trace Rifle", _traceRifleSynergy },
+            { "Sword", _swordSynergy },
+            { "Rocket Launcher", _rocketLauncherSynergy },
+            { "Linear Fusion", _linearFusionSynergy },
+            { "Linear Fusion Rifle", _linearFusionSynergy },
+            { "Machine Gun", _machineGunSynergy }
+        };
+
+        private static readonly HashSet<string> _primarySynergy = new HashSet<string>
+        {
+            "Auto Rifle",
+            "Scout Rifle",
+            "Pulse Rifle",
+            "Hand Cannon",
+            "Submachine Gun",
+            "Sidearm",
+            "Bow",
+            "Light Arms",
+            "Rifle",
+            "Scatter",
+            "Oversize",
+            "Kinetic",
+            "Energy",
+        };
+
+        private static readonly HashSet<string> _specialSynergy = new HashSet<string>
+        {
+            "Shotgun",
+            "Grenade Launcher",
+            "Fusion Rifle",
+            "Sniper Rifle",
+            "Trace Rifle",
+            "Kinetic",
+            "Energy",
+            "Oversize",
+            "Precision",
+            "Scatter",
+            "Rifle",
             "Light Reactor",
             "Pump Action",
             "Remote Connection",
         };
 
-        private static readonly HashSet<string> _glovePrimaryPerkStrings = new HashSet<string>
+        private static readonly HashSet<string> _heavySynergy = new HashSet<string>
         {
-            "Loader",
-            "Fastball",
-            "Momentum Transfer",
-            "Impact Induction",
-        };
-
-        private static readonly HashSet<string> _chestPrimaryPerkStrings = new HashSet<string>
-        {
-            "Unflinching",
-        };
-
-        private static readonly HashSet<string> _legPrimaryPerkStrings = new HashSet<string>
-        {
-            "Dexterity",
-            "Traction",
-            "Perpetuation",
-            "Dynamo",
-            "Bomber",
-            "Outreach",
-            "Distribution",
-        };
-
-        private static readonly HashSet<string> _classItemPrimaryPerkStrings = new HashSet<string>
-        {
-            "Insulation",
-            "Innervation",
-            "Perpetuation",
-            "Invigoration",
-            "Better Already",
-            "Recuperation",
-            "Absolution"
+            "Sword",
+            "Grenade Launcher",
+            "Rocket Launcher",
+            "Linear Fusion",
+            "Machine Gun",
+            "Sniper Rifle",
+            "Shotgun",
+            "Power",
+            "Oversize",
+            "Rifle",
+            "Heavy Lifting"
         };
 
 
+        private static readonly Dictionary<string, HashSet<string>> _ammoFinderSynergies = new Dictionary<string, HashSet<string>>
+        {
+            { "Primary", _primarySynergy },
+            { "Special", _specialSynergy },
+            { "Heavy", _heavySynergy },
+        };
+
+
+        // HashSets from here down are currently unused. Kept around partly for documentation purposes and partly 
+        // because I think I should be able to generate the HashSets above from these somehow...
         private static readonly HashSet<string> _kineticWeapons = new HashSet<string>
         {
             "Auto Rifle",
@@ -401,7 +442,7 @@ namespace DestinyArmourSelector
             }
 
             string[] perkTokens = temp.ToArray();
-            
+
             TrimPerkTokens(perkTokens);
 
             int indexOfFirstBasePerk = FindIndexOfFirstBasePerk(perkTokens);
@@ -486,154 +527,126 @@ namespace DestinyArmourSelector
             };
         }
 
-
-        private string CalculateSynergy(PerkGroup primaryPerks, PerkGroup secondaryPerks)
+        private string CalculateAmmoFinderSynergy(int secondaryPerkIndex, string secondaryPerk, int primaryPerkIndex, string primaryPerk)
         {
             var sb = new StringBuilder();
 
-            if(!string.IsNullOrWhiteSpace(primaryPerks.Perk1))
-            {
-                sb.Append(CalculateSynergy(1, primaryPerks.Perk1, secondaryPerks));
-            }
-
-            if (!string.IsNullOrWhiteSpace(primaryPerks.Perk2))
-            {
-                sb.Append(CalculateSynergy(2, primaryPerks.Perk2, secondaryPerks));
-            }
-
-            if (!string.IsNullOrWhiteSpace(primaryPerks.Perk3))
-            {
-                sb.Append(CalculateSynergy(3, primaryPerks.Perk3, secondaryPerks));
-            }
+            string weaponClass = ExtractWeaponClass(secondaryPerk);
+            sb.Append(CalculateSecondaryPerkSynergy(secondaryPerkIndex, primaryPerkIndex, primaryPerk, weaponClass, _ammoFinderSynergies));
 
             return sb.ToString();
         }
 
-        private string CalculateSynergy(int index, string primaryPerk, PerkGroup secondaryPerks)
-        {
-            string result = string.Empty;
-
-            switch (_armourType)
-            {
-            case ArmourType.Helmet:
-                result = CalculateHelmetSynergy(index, primaryPerk, secondaryPerks);
-                break;
-            case ArmourType.Gloves:
-                result = CalculateGloveSynergy(index, primaryPerk, secondaryPerks);
-                break;
-            case ArmourType.Chest:
-                result = CalculateChestSynergy(index, primaryPerk, secondaryPerks);
-                break;
-            case ArmourType.Legs:
-                result = CalculateLegSynergy(index, primaryPerk, secondaryPerks);
-                break;
-            case ArmourType.ClassItem:
-                break;
-            default:
-                break;
-            }
-
-            return result;
-        }
-
-        private string CalculateLegSynergy(int index, string primaryPerk, PerkGroup secondaryPerks)
+        private string CalculateScavengerOrReservesSynergy(int secondaryPerkIndex, string secondaryPerk, int primaryPerkIndex, string primaryPerk)
         {
             var sb = new StringBuilder();
 
-            
-            return sb.ToString();
-        }
-
-        private string CalculateChestSynergy(int index, string primaryPerk, PerkGroup secondaryPerks)
-        {
-            var sb = new StringBuilder();
-
-            
-            return sb.ToString();
-        }
-
-        private string CalculateGloveSynergy(int index, string primaryPerk, PerkGroup secondaryPerks)
-        {
-            var sb = new StringBuilder();
-
-            
+            string weaponName = ExtractWeaponName(secondaryPerk);
+            sb.Append(CalculateSecondaryPerkSynergy(secondaryPerkIndex, primaryPerkIndex, primaryPerk, weaponName, _weaponTypeSynergies));
 
             return sb.ToString();
         }
 
-        private string CalculateHelmetSynergy(int index, string primaryPerk, PerkGroup secondaryPerks)
+        private string CalculateSecondaryPerkSynergy(int secondaryPerkIndex, string secondaryPerk, int primaryPerkIndex, string primaryPerk)
         {
             var sb = new StringBuilder();
 
-            sb.Append(CalculatePrimarySecondaryPerkSynergy(index, primaryPerk, "Pump Action", secondaryPerks, "Shotgun"));
-            sb.Append(CalculatePrimarySecondaryPerkSynergy(index, primaryPerk, "Light Reactor", secondaryPerks, "Fusion Rifle"));
-            sb.Append(CalculatePrimarySecondaryPerkSynergy(index, primaryPerk, "Remote Connection", secondaryPerks, "Sniper Rifle"));
-
-            foreach (string weaponText in _heavyWeapons)
+            if (!string.IsNullOrWhiteSpace(primaryPerk))
             {
-                sb.Append(CalculatePrimarySecondaryPerkSynergy(index, primaryPerk, "Heavy Lifting", secondaryPerks, weaponText));
-            }
-
-            sb.Append(CalculatePrimarySecondaryPerkSynergy(index, primaryPerk, "Heavy Lifting", secondaryPerks, "Heavy Ammo"));
-
-            if (primaryPerk.Contains("Targeting"))
-            {
-                string weaponText = primaryPerk.Substring(0, primaryPerk.IndexOf("Targeting"));
-                weaponText = weaponText.Trim();
-
-                if(weaponText.Equals(""))
-
-                if(secondaryPerks.Perk1.Contains(weaponText))
+                if (secondaryPerk.Contains("Finder"))
                 {
-                    sb.Append($"{index}_1");
+                    sb.Append(CalculateAmmoFinderSynergy(secondaryPerkIndex, secondaryPerk, primaryPerkIndex, primaryPerk));
                 }
-
-                if (!string.IsNullOrWhiteSpace(secondaryPerks.Perk2) && secondaryPerks.Perk2.Contains(weaponText))
+                else // Must be Scavanger or Reserves perk
                 {
-                    sb.Append($"{index}_2");
-                }                
-            }
-
-            return sb.ToString();
-        }
-
-        private string CalculatePrimarySecondaryPerkSynergy(int index, string primaryPerk, string primaryPerkText, PerkGroup secondaryPerks, string weaponText)
-        {
-            var sb = new StringBuilder();
-
-            if (primaryPerk.Equals(primaryPerkText))
-            {
-                if (secondaryPerks.Perk1.StartsWith(weaponText))
-                {
-                    sb.Append($"{index}_1");
-                }
-
-                if (!string.IsNullOrWhiteSpace(secondaryPerks.Perk2) && secondaryPerks.Perk2.StartsWith(weaponText))
-                {
-                    sb.Append($"{index}_2");
+                    sb.Append(CalculateScavengerOrReservesSynergy(secondaryPerkIndex, secondaryPerk, primaryPerkIndex, primaryPerk));
                 }
             }
 
             return sb.ToString();
         }
 
-        private int FindIndexOfLastSecondaryPerk(int startIndex, string[] perkTokens)
+        private string CalculateSecondaryPerkSynergy(int secondaryPerkIndex, int primaryPerkIndex, string primaryPerk, string key, Dictionary<string, HashSet<string>> dictionary)
         {
-            int result = startIndex;
+            var sb = new StringBuilder();
 
-            for (int i = startIndex + 1; i < perkTokens.Length; ++i)
+            primaryPerk = MassagePrimaryPerk(primaryPerk);
+
+            HashSet<string> synergies = null;
+
+            if (dictionary.TryGetValue(key, out synergies))
             {
-                foreach (string perk in _secondaryPerkStrings)
+                foreach (string synergy in synergies)
                 {
-                    if (perkTokens[i].Contains(perk))
+                    if (primaryPerk.StartsWith(synergy))
                     {
-                        result = i;
+                        sb.Append($"{primaryPerkIndex}_{secondaryPerkIndex}_");
                         break;
                     }
                 }
             }
 
-            return result;
+            return sb.ToString();
+        }
+
+        private string CalculateSynergy(PerkGroup primaryPerks, PerkGroup secondaryPerks)
+        {
+            var sb = new StringBuilder();
+
+            if (!string.IsNullOrWhiteSpace(secondaryPerks.Perk1))
+            {
+                sb.Append(CalculateSecondaryPerkSynergy(1, secondaryPerks.Perk1, 1, primaryPerks.Perk1));
+                sb.Append(CalculateSecondaryPerkSynergy(1, secondaryPerks.Perk1, 2, primaryPerks.Perk2));
+                sb.Append(CalculateSecondaryPerkSynergy(1, secondaryPerks.Perk1, 3, primaryPerks.Perk3));
+            }
+
+            if (!string.IsNullOrWhiteSpace(secondaryPerks.Perk2))
+            {
+                sb.Append(CalculateSecondaryPerkSynergy(2, secondaryPerks.Perk2, 1, primaryPerks.Perk1));
+                sb.Append(CalculateSecondaryPerkSynergy(2, secondaryPerks.Perk2, 2, primaryPerks.Perk2));
+                sb.Append(CalculateSecondaryPerkSynergy(2, secondaryPerks.Perk2, 3, primaryPerks.Perk3));
+            }
+
+            return sb.ToString().Trim('_');
+        }
+
+        private string ExtractWeaponClass(string secondaryPerk)
+        {
+            return secondaryPerk.Substring(0, secondaryPerk.IndexOf("Ammo Finder"));
+        }
+
+        private string ExtractWeaponName(string secondaryPerk)
+        {
+            return secondaryPerk.Substring(0, secondaryPerk.LastIndexOf(' '));
+        }
+
+        private int FindIndexOfFirstBasePerk(string[] perkTokens)
+        {
+            for (int i = 0; i < perkTokens.Length; ++i)
+            {
+                if (_basePerkStrings.Contains(perkTokens[i]))
+                {
+                    return i;
+                }
+            }
+
+            return 0;
+        }
+
+        private int FindIndexOfFirstPrimaryPerk(int indexOfLastBasePerk, string[] perkTokens)
+        {
+            for (int i = indexOfLastBasePerk + 1; i < perkTokens.Length; ++i)
+            {
+                foreach (string perk in _primaryPerkStrings)
+                {
+                    if (perkTokens[i].Contains(perk))
+                    {
+                        return i;
+                    }
+                }
+            }
+
+            return 0;
         }
 
         private int FindIndexOfFirstSecondaryPerk(int startIndex, string[] perkTokens)
@@ -646,6 +659,19 @@ namespace DestinyArmourSelector
                     {
                         return i;
                     }
+                }
+            }
+
+            return 0;
+        }
+
+        private int FindIndexOfLastBasePerk(int indexOfFirstBasePerk, string[] perkTokens)
+        {
+            for (int i = indexOfFirstBasePerk + 1; i < perkTokens.Length; ++i)
+            {
+                if (!_basePerkStrings.Contains(perkTokens[i]))
+                {
+                    return i - 1;
                 }
             }
 
@@ -670,55 +696,23 @@ namespace DestinyArmourSelector
             return i;
         }
 
-        private int FindIndexOfFirstPrimaryPerk(int indexOfLastBasePerk, string[] perkTokens)
+        private int FindIndexOfLastSecondaryPerk(int startIndex, string[] perkTokens)
         {
-            for (int i = indexOfLastBasePerk + 1; i < perkTokens.Length; ++i)
+            int result = startIndex;
+
+            for (int i = startIndex + 1; i < perkTokens.Length; ++i)
             {
-                foreach (string perk in _primaryPerkStrings)
+                foreach (string perk in _secondaryPerkStrings)
                 {
                     if (perkTokens[i].Contains(perk))
                     {
-                        return i;
+                        result = i;
+                        break;
                     }
                 }
             }
 
-            return 0;
-        }
-
-        private void TrimPerkTokens(string[] perkTokens)
-        {
-            for (int i = 0; i < perkTokens.Length; ++i)
-            {
-                perkTokens[i] = perkTokens[i].Trim();
-                perkTokens[i] = perkTokens[i].Trim('*');
-            }
-        }
-
-        private int FindIndexOfLastBasePerk(int indexOfFirstBasePerk, string[] perkTokens)
-        {
-            for (int i = indexOfFirstBasePerk + 1; i < perkTokens.Length; ++i)
-            {
-                if (!_basePerkStrings.Contains(perkTokens[i]))
-                {
-                    return i - 1;
-                }
-            }
-
-            return 0;
-        }
-
-        private int FindIndexOfFirstBasePerk(string[] perkTokens)
-        {
-            for (int i = 0; i < perkTokens.Length; ++i)
-            {
-                if (_basePerkStrings.Contains(perkTokens[i]))
-                {
-                    return i;
-                }
-            }
-
-            return 0;
+            return result;
         }
 
         private ArmourType GetArmourType(string[] tokens)
@@ -739,6 +733,29 @@ namespace DestinyArmourSelector
         private int GetPowerLevel(string[] tokens)
         {
             return int.Parse(tokens[7]);
+        }
+
+        private string MassagePrimaryPerk(string primaryPerk)
+        {
+            if (primaryPerk.StartsWith(_unflinchingAimPrefix))
+            {
+                primaryPerk = primaryPerk.Substring(_unflinchingAimPrefix.Length);
+            }
+            else if (primaryPerk.StartsWith(_enhancedPrefix))
+            {
+                primaryPerk = primaryPerk.Substring(_enhancedPrefix.Length);
+            }
+
+            return primaryPerk;
+        }
+
+        private void TrimPerkTokens(string[] perkTokens)
+        {
+            for (int i = 0; i < perkTokens.Length; ++i)
+            {
+                perkTokens[i] = perkTokens[i].Trim();
+                perkTokens[i] = perkTokens[i].Trim('*');
+            }
         }
     }
 }
