@@ -17,22 +17,20 @@ namespace DestinyArmourSelector
             _characterClass = characterClass;
         }
 
-        public (IEnumerable<ArmourPiece> tokeep, IEnumerable<ArmourPiece> toDelete) ProcessArmourPieces()
+        public (IEnumerable<ArmourPiece> toKeep, IEnumerable<ArmourPiece> toDelete) ProcessArmourPieces()
         {
             IList<ArmourPiece> armourPieces = _pieces.Where(x => x.Class == _characterClass).ToList();
 
             return ProcessArmourPiecesInternal(armourPieces);
         }
 
-        private (IEnumerable<ArmourPiece> tokeep, IEnumerable<ArmourPiece> toDelete) ProcessArmourPiecesInternal(IList<ArmourPiece> pieces)
+        private (IEnumerable<ArmourPiece> toKeep, IEnumerable<ArmourPiece> toDelete) ProcessArmourPiecesInternal(IList<ArmourPiece> pieces)
         {
             var toKeep = new List<ArmourPiece>();
             var toDelete = new List<ArmourPiece>();
 
-            pieces = pieces.
-                OrderByDescending(x => x.Synergy.Length).
-                ThenByDescending(x => x.PowerLevel).
-                ToList();
+            pieces = pieces.OrderBy(x => x.Name).ThenByDescending(x => x.PowerLevel).ToList();
+            pieces = pieces.OrderByDescending(x => x.Synergy.Length).ThenByDescending(x => x.PowerLevel).ToList();
 
             foreach (ArmourPiece piece in pieces)
             {
