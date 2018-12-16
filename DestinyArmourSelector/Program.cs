@@ -9,8 +9,9 @@ namespace DestinyArmourSelector
 
     class Program
     {
-        string _inputFileName = string.Empty;
-        ArmourType _armourType = ArmourType.Unknown;
+        private string _inputFileName = string.Empty;
+        private ArmourType _armourType = ArmourType.Unknown;
+        private bool _isDimInputFile = false;
 
         static void Main(string[] args)
         {
@@ -42,6 +43,10 @@ namespace DestinyArmourSelector
                 {
                     _armourType = ArmourTypeHelpers.FromString(args[++i]);
                 }
+                else if ("-dim".Equals(args[i], StringComparison.OrdinalIgnoreCase))
+                {
+                    _isDimInputFile = true;
+                }
             }
 
             return ValidateCmdLine();
@@ -49,7 +54,9 @@ namespace DestinyArmourSelector
 
         public async Task<bool> Run()
         {
-            var creator = new ArmourPieceCreator(_inputFileName, _armourType);
+            IArmourPieceFactory factory = _isDimInputFile ? DIMArmourPieceFactory.Create(_armourType) : ArmourPieceFactory.Create(_armourType);
+            var creator = new ArmourPieceCreator(_inputFileName, factory);
+
             IList<ArmourPiece> armourPieces = await creator.CreateArmourPieces();
 
             var hunterSelector = new ArmourPieceSelector(armourPieces, CharacterClass.Hunter);

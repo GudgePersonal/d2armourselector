@@ -8,18 +8,17 @@ namespace DestinyArmourSelector
 
     class ArmourPieceCreator
     {
-        private readonly ArmourType _armourType = ArmourType.Unknown;
         private readonly string _fileName = string.Empty;
+        private readonly IArmourPieceFactory _factory;
 
-        public ArmourPieceCreator(string fileName, ArmourType type)
+        public ArmourPieceCreator(string fileName, IArmourPieceFactory factory)
         {
             _fileName = fileName;
-            _armourType = type;
+            _factory = factory;
         }
 
         public async Task<IList<ArmourPiece>> CreateArmourPieces()
         {
-            IArmourPieceFactory factory = ArmourPieceFactory.Create(_armourType);
             IList<ArmourPiece> armourPieces = new List<ArmourPiece>();
 
             using (TextReader reader = new StreamReader(_fileName))
@@ -38,8 +37,12 @@ namespace DestinyArmourSelector
 
                     if (tokens.Length > 0)
                     {
-                        ArmourPiece armourPiece = factory.CreateArmourPiece(++i, tokens);
-                        armourPieces.Add(armourPiece);
+                        ArmourPiece armourPiece = _factory.CreateArmourPiece(++i, tokens);
+
+                        if (armourPiece != null)
+                        {
+                            armourPieces.Add(armourPiece);
+                        }
                     }
                 }
                 while (tokens.Length > 0);
