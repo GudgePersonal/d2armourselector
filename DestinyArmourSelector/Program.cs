@@ -11,7 +11,7 @@ namespace DestinyArmourSelector
     {
         private string _inputFileName = string.Empty;
         private ArmourType _armourType = ArmourType.Unknown;
-        private bool _isDimInputFile = false;
+        private bool _isDimInputFile = true;
 
         static void Main(string[] args)
         {
@@ -43,9 +43,9 @@ namespace DestinyArmourSelector
                 {
                     _armourType = ArmourTypeHelpers.FromString(args[++i]);
                 }
-                else if ("-dim".Equals(args[i], StringComparison.OrdinalIgnoreCase))
+                else if ("-notdim".Equals(args[i], StringComparison.OrdinalIgnoreCase))
                 {
-                    _isDimInputFile = true;
+                    _isDimInputFile = false;
                 }
             }
 
