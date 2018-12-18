@@ -2,11 +2,23 @@
 
 namespace DestinyArmourSelector
 {
+    using System;
     using System.Collections.Generic;
     using System.Text;
 
     public class DIMArmourPieceFactory : IArmourPieceFactory
     {
+        // 0                1             2                    3         4          5       6           7      8                        9                10          11      12        13    14      15     16          17            18        19        20          21     22 ...
+        // Name,            Hash,         Id,                  Tag,      Tier,      Type,   Equippable, Power, Masterwork Type,         Masterwork Tier, Owner,      Locked, Equipped, Year, Season, Event, DTR Rating, # of Reviews, Mobility, Recovery, Resilience, Notes, Perks
+
+        private int _nameIndex = 0;
+        private int _typeIndex = 5;
+        private int _classIndex = 6;
+        private int _powerIndex = 7;
+        private int _elementIndex = 8;
+        private int _masterworkIndex = 9;
+        private int _perksIndex = 22;
+
         private readonly ArmourType _armourType = ArmourType.Unknown;
         private static readonly string _enhancedPrefix = "Enhanced ";
         private static readonly string _unflinchingAimPrefix = "Unflinching ";
@@ -413,10 +425,9 @@ namespace DestinyArmourSelector
             _armourType = armourType;
         }
 
-        // 0    1    2  3   4    5    6          7     8     9      10       11   12     13    14         15           16       17       18         19    20    ...
-        // Name,Hash,Id,Tag,Tier,Type,Equippable,Power,Owner,Locked,Equipped,Year,Season,Event,DTR Rating,# of Reviews,Mobility,Recovery,Resilience,Notes,Perks ...
-        // "Reverie Dawn Helm","4097166900",6917529083913248847,,Legendary,Helmet,titan,603,Titan(609),true,false,2,4,,N/A,N/A,2,0,1,,Mobile Titan Armor*,Mobility Enhancement Mod*,Restorative Mod, Riven's Curse*,Tier 2 Armor*,Burnished Dreams*,Pulse Rifle Targeting*,Light Reactor,Ashes to Assets,Fusion Rifle Reserves,Shotgun Reserves*
-        //
+        // 0                1             2                    3         4          5       6           7      8                        9                10          11      12        13    14      15     16          17            18        19        20          21     22 ...
+        // Name,            Hash,         Id,                  Tag,      Tier,      Type,   Equippable, Power, Masterwork Type,         Masterwork Tier, Owner,      Locked, Equipped, Year, Season, Event, DTR Rating, # of Reviews, Mobility, Recovery, Resilience, Notes, Perks
+        // "Prodigal Helm", "2753581141", 6917529083638648522, favorite, Legendary, Helmet, titan,      619,   Solar Damage Resistance, 4,               Titan(623), true,   false,    2,    4,      ,      N/A,        N/A,          1,        1,        1,          ,      Restorative Titan Armor*,Mobility Enhancement Mod*,Restorative Mod, Tier 4 Armor*,Scatter Projectile Targeting*,Machine Gun Targeting,Shotgun Reserves*, Machine Gun Reserves
         public ArmourPiece CreateArmourPiece(int rowNumber, string[] tokens)
         {
             ArmourType armourType = GetArmourType(tokens);
@@ -430,13 +441,12 @@ namespace DestinyArmourSelector
             string name = GetName(tokens);
             int powerLevel = GetPowerLevel(tokens);
 
-            // Can't get Masterwork level or Element from DIM CSV
-            int masterWork = tokens[4].Equals("Exotic") ? 0 : 1;
-            Element element = Element.None;
+            int masterWork = GetMasterWorkLevel(tokens);
+            Element element = GetMasterWorkElement(tokens);
 
             var temp = new List<string>();
 
-            for (int i = 20; i < tokens.Length; ++i)
+            for (int i = _perksIndex; i < tokens.Length; ++i)
             {
                 temp.Add(tokens[i]);
             }
@@ -717,22 +727,45 @@ namespace DestinyArmourSelector
 
         private ArmourType GetArmourType(string[] tokens)
         {
-            return ArmourTypeHelpers.FromDIMString(tokens[5]);
+            return ArmourTypeHelpers.FromDIMString(tokens[_typeIndex]);
         }
 
         private CharacterClass GetCharacterClass(string[] tokens)
         {
-            return CharacterClassHelpers.FromString(tokens[6]);
+            return CharacterClassHelpers.FromString(tokens[_classIndex]);
+        }
+
+        private Element GetMasterWorkElement(string[] tokens)
+        {
+            string element = tokens[_elementIndex];
+            if (string.IsNullOrWhiteSpace(element))
+            {
+                return Element.None;
+            }
+            
+            element = element.Substring(0, element.IndexOf(' '));
+            return ElementHelpers.FromString(element);
+        }
+
+        private int GetMasterWorkLevel(string[] tokens)
+        {
+            string masterWorkLevel = tokens[_masterworkIndex];
+            if (string.IsNullOrWhiteSpace(masterWorkLevel))
+            {
+                return 0;
+            }
+
+            return int.Parse(masterWorkLevel);
         }
 
         private string GetName(string[] tokens)
         {
-            return tokens[0].Trim('"');
+            return tokens[_nameIndex].Trim('"');
         }
 
         private int GetPowerLevel(string[] tokens)
         {
-            return int.Parse(tokens[7]);
+            return int.Parse(tokens[_powerIndex]);
         }
 
         private string MassagePrimaryPerk(string primaryPerk)
