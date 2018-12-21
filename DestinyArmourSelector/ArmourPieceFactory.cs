@@ -2,14 +2,11 @@
 
 namespace DestinyArmourSelector
 {
-    using System.Collections.Generic;
-    using System.Linq;
-
-    public class ArmourPieceFactory
+    public class ArmourPieceFactory : IArmourPieceFactory
     {
         private readonly ArmourType _armourType = ArmourType.Unknown;
 
-        public static ArmourPieceFactory Create(ArmourType armourType)
+        public static IArmourPieceFactory Create(ArmourType armourType)
         {
             return new ArmourPieceFactory(armourType);
         }
@@ -19,19 +16,17 @@ namespace DestinyArmourSelector
             _armourType = armourType;
         }
 
-        public ArmourPiece CreateArmourPiece(int rowNumber, IEnumerable<string> tokens)
+        public ArmourPiece CreateArmourPiece(int rowNumber, string[] tokens)
         {
-            IList<string> tokenList = tokens.ToList();
+            CharacterClass characterClass = CharacterClassHelpers.FromString(tokens[0]);
 
-            CharacterClass characterClass = CharacterClassHelpers.FromString(tokenList[0]);
-
-            string name = tokenList[1];
-            int powerLevel = int.Parse(tokenList[2]);
+            string name = tokens[1];
+            int powerLevel = int.Parse(tokens[2]);
             int masterWork = 0;
 
-            int.TryParse(tokenList[3], out masterWork);
+            int.TryParse(tokens[3], out masterWork);
 
-            Element element = ElementHelpers.FromString(tokenList[4]);
+            Element element = ElementHelpers.FromString(tokens[4]);
 
             PerkGroup basePerks = new PerkGroup();
             PerkGroup primaryPerks = new PerkGroup();
@@ -41,30 +36,33 @@ namespace DestinyArmourSelector
 
             if (_armourType == ArmourType.ClassItem)
             {
+                // 0     1    2  3  4       5 6 7 8 9
                 // Class,Name,PL,MW,Element,1,2,3,4,5
 
-                primaryPerks.Perk1 = tokenList[5];
-                primaryPerks.Perk2 = tokenList[6];
-                primaryPerks.Perk3 = tokenList[7];
+                primaryPerks.Perk1 = tokens[5];
+                primaryPerks.Perk2 = tokens[6];
+                primaryPerks.Perk3 = tokens[7];
 
-                secondaryPerks.Perk1 = tokenList[8];
-                secondaryPerks.Perk2 = tokenList[9];
+                secondaryPerks.Perk1 = tokens[8];
+                secondaryPerks.Perk2 = tokens[9];
             }
             else
             {
+                //                                    1 1 1
+                // 0     1    2  3  4       5 6 7 8 9 0 1 2
                 // Class,Name,PL,MW,Element,1,2,3,4,5,6,7,Synergy
 
-                basePerks.Perk1 = tokenList[5];
-                basePerks.Perk2 = tokenList[6];
+                basePerks.Perk1 = tokens[5];
+                basePerks.Perk2 = tokens[6];
 
-                primaryPerks.Perk1 = tokenList[7];
-                primaryPerks.Perk2 = tokenList[8];
-                primaryPerks.Perk3 = tokenList[9];
+                primaryPerks.Perk1 = tokens[7];
+                primaryPerks.Perk2 = tokens[8];
+                primaryPerks.Perk3 = tokens[9];
 
-                secondaryPerks.Perk1 = tokenList[10];
-                secondaryPerks.Perk2 = tokenList[11];
+                secondaryPerks.Perk1 = tokens[10];
+                secondaryPerks.Perk2 = tokens[11];
 
-                synergy = tokenList[12];
+                synergy = tokens[12];
             }
 
             return new ArmourPiece(_armourType)

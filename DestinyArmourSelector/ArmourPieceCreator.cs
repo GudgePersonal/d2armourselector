@@ -4,44 +4,48 @@ namespace DestinyArmourSelector
 {
     using System.Collections.Generic;
     using System.IO;
-    using System.Linq;
     using System.Threading.Tasks;
 
     class ArmourPieceCreator
     {
-        private readonly ArmourType _armourType = ArmourType.Unknown;
         private readonly string _fileName = string.Empty;
+        private readonly IArmourPieceFactory _factory;
 
-        public ArmourPieceCreator(string fileName, ArmourType type)
+        public ArmourPieceCreator(string fileName, IArmourPieceFactory factory)
         {
             _fileName = fileName;
-            _armourType = type;
+            _factory = factory;
         }
 
         public async Task<IList<ArmourPiece>> CreateArmourPieces()
         {
-            ArmourPieceFactory factory = ArmourPieceFactory.Create(_armourType);
             IList<ArmourPiece> armourPieces = new List<ArmourPiece>();
 
             using (TextReader reader = new StreamReader(_fileName))
             {
                 var csvReader = new CsvReader(reader);
 
-                IEnumerable<string> headerTokens = await csvReader.Read();
-                IEnumerable<string> tokens;
+                // Skip header row
+                await csvReader.Read();
+
+                string[] tokens;
                 int i = 1;
 
                 do
                 {
                     tokens = await csvReader.Read();
 
-                    if (tokens.Any())
+                    if (tokens.Length > 0)
                     {
-                        ArmourPiece armourPiece = factory.CreateArmourPiece(++i, tokens);
-                        armourPieces.Add(armourPiece);
+                        ArmourPiece armourPiece = _factory.CreateArmourPiece(++i, tokens);
+
+                        if (armourPiece != null)
+                        {
+                            armourPieces.Add(armourPiece);
+                        }
                     }
                 }
-                while (tokens.Any());
+                while (tokens.Length > 0);
             }
 
             return armourPieces;

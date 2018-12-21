@@ -46,6 +46,10 @@ namespace DestinyArmourSelector
             sb.Append(", ");
             sb.Append(PowerLevel);
             sb.Append(", ");
+            sb.Append(ElementHelpers.ToString(Element));
+            sb.Append(", ");
+            sb.Append(MasterWorkLevel);
+            sb.Append(", ");
             sb.Append(Synergy);
 
             return sb.ToString();

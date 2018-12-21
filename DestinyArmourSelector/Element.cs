@@ -26,5 +26,20 @@ namespace DestinyArmourSelector
                 return Element.None;
             }
         }
+
+        public static string ToString(Element element)
+        {
+            switch (element)
+            {
+            case Element.Arc:
+                return "Arc";
+            case Element.Solar:
+                return "Solar";
+            case Element.Void:
+                return "Void";
+            default:
+                return "None";
+            }
+        }
     }
 }

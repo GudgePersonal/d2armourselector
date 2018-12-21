@@ -2,7 +2,6 @@
 
 namespace DestinyArmourSelector
 {
-    using System.Collections.Generic;
     using System.IO;
     using System.Threading.Tasks;
 
@@ -16,7 +15,7 @@ namespace DestinyArmourSelector
             _reader = reader;
         }
 
-        public async Task<IEnumerable<string>> Read()
+        public async Task<string[]> Read()
         {
             string line = await _reader.ReadLineAsync();
 

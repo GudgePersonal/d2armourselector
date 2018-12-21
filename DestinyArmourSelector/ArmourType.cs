@@ -33,6 +33,27 @@ namespace DestinyArmourSelector
             }
         }
 
+        public static ArmourType FromDIMString(string s)
+        {
+            switch (s)
+            {
+            case "Helmet":
+                return ArmourType.Helmet;
+            case "Gauntlets":
+                return ArmourType.Gloves;
+            case "Chest Armor":
+                return ArmourType.Chest;
+            case "Leg Armor":
+                return ArmourType.Legs;
+            case "Titan Mark":
+            case "Hunter Cloak":
+            case "Warlock Bond":
+                return ArmourType.ClassItem;
+            default:
+                return ArmourType.Unknown;
+            }
+        }
+
         public static string ToString(ArmourType c)
         {
             switch (c)
