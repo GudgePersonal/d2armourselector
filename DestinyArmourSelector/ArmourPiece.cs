@@ -2,12 +2,17 @@
 
 namespace DestinyArmourSelector
 {
+    using Interfaces;
     using System.Text;
 
     public class ArmourPiece
     {
-        public ArmourPiece(ArmourType armourType)
+        ISynergyCalculator _synergyCalculator;
+        string _synergy = null;
+
+        public ArmourPiece(ArmourType armourType, ISynergyCalculator synergyCalculator)
         {
+            _synergyCalculator = synergyCalculator;
             ArmourType = armourType;
         }
 
@@ -31,7 +36,18 @@ namespace DestinyArmourSelector
 
         public PerkGroup SecondaryPerks { get; set; }
 
-        public string Synergy { get; set; }
+        public string Synergy
+        {
+            get
+            {
+                if (_synergy == null)
+                {
+                    _synergy = _synergyCalculator.CalculateSynergy(PrimaryPerks, SecondaryPerks);
+                }
+
+                return _synergy;
+            }
+        }
 
         public override string ToString()
         {

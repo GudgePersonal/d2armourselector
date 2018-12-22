@@ -2,6 +2,8 @@
 
 namespace DestinyArmourSelector
 {
+    using Interfaces;
+
     public class ArmourPieceFactory : IArmourPieceFactory
     {
         private readonly ArmourType _armourType = ArmourType.Unknown;
@@ -65,7 +67,7 @@ namespace DestinyArmourSelector
                 synergy = tokens[12];
             }
 
-            return new ArmourPiece(_armourType)
+            return new ArmourPiece(_armourType, new StaticSynergyCalculator(synergy))
             {
                 BasePerks = basePerks,
                 Class = characterClass,
@@ -76,7 +78,6 @@ namespace DestinyArmourSelector
                 PrimaryPerks = primaryPerks,
                 RowNumber = rowNumber,
                 SecondaryPerks = secondaryPerks,
-                Synergy = synergy
             };
         }
     }

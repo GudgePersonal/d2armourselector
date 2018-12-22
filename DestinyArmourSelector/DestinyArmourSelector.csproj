@@ -53,10 +53,13 @@
     <Compile Include="ArmourPieceCreator.cs" />
     <Compile Include="CsvReader.cs" />
     <Compile Include="Element.cs" />
-    <Compile Include="IArmourPieceFactory.cs" />
+    <Compile Include="Interfaces\IArmourPieceFactory.cs" />
+    <Compile Include="Interfaces\ISynergyCalculator.cs" />
     <Compile Include="PerkGroup.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SimpleSynergyCalculator.cs" />
+    <Compile Include="StaticSynergyCalculator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

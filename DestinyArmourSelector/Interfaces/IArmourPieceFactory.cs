@@ -1,6 +1,6 @@
 ﻿// Copyright Small & Fast 2018
 
-namespace DestinyArmourSelector
+namespace DestinyArmourSelector.Interfaces
 {
     public interface IArmourPieceFactory
     {
