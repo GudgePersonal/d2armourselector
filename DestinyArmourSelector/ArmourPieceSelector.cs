@@ -11,11 +11,19 @@ namespace DestinyArmourSelector
         private IEnumerable<ArmourPiece> _pieces;
         private readonly CharacterClass _characterClass = CharacterClass.Unknown;
 
-        public ArmourPieceSelector(IEnumerable<ArmourPiece> pieces, CharacterClass characterClass)
+        public ArmourPieceSelector(IEnumerable<ArmourPiece> pieces, CharacterClass characterClass) :
+            this(pieces, characterClass, true)
+        {
+        }
+
+        public ArmourPieceSelector(IEnumerable<ArmourPiece> pieces, CharacterClass characterClass, bool treatNameAsPerk)
         {
             _pieces = pieces;
             _characterClass = characterClass;
+            TreatNameAsPerk = treatNameAsPerk;
         }
+
+        public bool TreatNameAsPerk { get; set; } = true;
 
         public (IEnumerable<ArmourPiece> toKeep, IEnumerable<ArmourPiece> toDelete) ProcessArmourPieces()
         {
@@ -54,7 +62,10 @@ namespace DestinyArmourSelector
 
         private void AddPerks(ArmourPiece piece)
         {
-            _perksFound.Add(piece.Name);
+            if (TreatNameAsPerk)
+            {
+                _perksFound.Add(piece.Name);
+            }
 
             _perksFound.Add(piece.PrimaryPerks.Perk1);
             _perksFound.Add(piece.PrimaryPerks.Perk2);
@@ -67,7 +78,7 @@ namespace DestinyArmourSelector
         private bool ShouldDelete(ArmourPiece piece)
         {
             return
-                _perksFound.Contains(piece.Name) &&
+                (!TreatNameAsPerk || _perksFound.Contains(piece.Name)) &&
                 _perksFound.Contains(piece.PrimaryPerks.Perk1) &&
                 _perksFound.Contains(piece.PrimaryPerks.Perk2) &&
                 _perksFound.Contains(piece.PrimaryPerks.Perk3) &&

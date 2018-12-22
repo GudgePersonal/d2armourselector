@@ -13,6 +13,7 @@ namespace DestinyArmourSelector
         private string _inputFileName = string.Empty;
         private ArmourType _armourType = ArmourType.Unknown;
         private bool _isDimInputFile = true;
+        private bool _keepOneOfEachPiece = true;
 
         static void Main(string[] args)
         {
@@ -48,6 +49,10 @@ namespace DestinyArmourSelector
                 {
                     _isDimInputFile = false;
                 }
+                else if ("-notoneofeach".Equals(args[i], StringComparison.OrdinalIgnoreCase))
+                {
+                    _keepOneOfEachPiece = false;
+                }
             }
 
             return ValidateCmdLine();
@@ -60,15 +65,15 @@ namespace DestinyArmourSelector
 
             IList<ArmourPiece> armourPieces = await creator.CreateArmourPieces();
 
-            var hunterSelector = new ArmourPieceSelector(armourPieces, CharacterClass.Hunter);
+            var hunterSelector = new ArmourPieceSelector(armourPieces, CharacterClass.Hunter, _keepOneOfEachPiece);
             (IEnumerable<ArmourPiece> toKeep, IEnumerable<ArmourPiece> toDelete) hunterPieces = hunterSelector.ProcessArmourPieces();
             OutputResults(hunterPieces.toKeep, hunterPieces.toDelete);
 
-            var titanSelector = new ArmourPieceSelector(armourPieces, CharacterClass.Titan);
+            var titanSelector = new ArmourPieceSelector(armourPieces, CharacterClass.Titan, _keepOneOfEachPiece);
             (IEnumerable<ArmourPiece> toKeep, IEnumerable<ArmourPiece> toDelete) titanPieces = titanSelector.ProcessArmourPieces();
             OutputResults(titanPieces.toKeep, titanPieces.toDelete);
 
-            var warlockSelector = new ArmourPieceSelector(armourPieces, CharacterClass.Warlock);
+            var warlockSelector = new ArmourPieceSelector(armourPieces, CharacterClass.Warlock, _keepOneOfEachPiece);
             (IEnumerable<ArmourPiece> toKeep, IEnumerable<ArmourPiece> toDelete) warlockPieces = warlockSelector.ProcessArmourPieces();
             OutputResults(warlockPieces.toKeep, warlockPieces.toDelete);
 
