@@ -29,7 +29,6 @@ namespace DestinyArmourSelector
             var toKeep = new List<ArmourPiece>();
             var toDelete = new List<ArmourPiece>();
 
-            pieces = pieces.OrderBy(x => x.Name).ThenByDescending(x => x.PowerLevel).ToList();
             pieces = pieces.OrderByDescending(x => x.Synergy.Length).ThenByDescending(x => x.PowerLevel).ToList();
 
             foreach (ArmourPiece piece in pieces)
@@ -82,7 +81,7 @@ namespace DestinyArmourSelector
                 return false;
             }
 
-            if (piece.MasterWorkLevel == 0)
+            if (piece.MasterWorkLevel == 0) // Exotics have no masterwork
             {
                 return false;
             }
