@@ -13,6 +13,8 @@ namespace DestinyArmourSelector
         private string _inputFileName = string.Empty;
         private ArmourType _armourType = ArmourType.Unknown;
         private bool _isDimInputFile = true;
+        private bool _sortResult = true;
+        private bool _sortByPowerLevel = true;
 
         static void Main(string[] args)
         {
@@ -48,6 +50,14 @@ namespace DestinyArmourSelector
                 {
                     _isDimInputFile = false;
                 }
+                else if ("-nosort".Equals(args[i], StringComparison.OrdinalIgnoreCase))
+                {
+                    _sortResult = false;
+                }
+                else if ("-sortbyrow".Equals(args[i], StringComparison.OrdinalIgnoreCase))
+                {
+                    _sortByPowerLevel = false;
+                }
             }
 
             return ValidateCmdLine();
@@ -60,13 +70,13 @@ namespace DestinyArmourSelector
 
             IList<ArmourPiece> armourPieces = await creator.CreateArmourPieces();
 
-            var hunterSelector = new ArmourPieceSelector(armourPieces, CharacterClass.Hunter);
-            (IEnumerable<ArmourPiece> toKeep, IEnumerable<ArmourPiece> toDelete) hunterPieces = hunterSelector.ProcessArmourPieces();
-            OutputResults(hunterPieces.toKeep, hunterPieces.toDelete);
-
             var titanSelector = new ArmourPieceSelector(armourPieces, CharacterClass.Titan);
             (IEnumerable<ArmourPiece> toKeep, IEnumerable<ArmourPiece> toDelete) titanPieces = titanSelector.ProcessArmourPieces();
             OutputResults(titanPieces.toKeep, titanPieces.toDelete);
+
+            var hunterSelector = new ArmourPieceSelector(armourPieces, CharacterClass.Hunter);
+            (IEnumerable<ArmourPiece> toKeep, IEnumerable<ArmourPiece> toDelete) hunterPieces = hunterSelector.ProcessArmourPieces();
+            OutputResults(hunterPieces.toKeep, hunterPieces.toDelete);
 
             var warlockSelector = new ArmourPieceSelector(armourPieces, CharacterClass.Warlock);
             (IEnumerable<ArmourPiece> toKeep, IEnumerable<ArmourPiece> toDelete) warlockPieces = warlockSelector.ProcessArmourPieces();
@@ -77,8 +87,11 @@ namespace DestinyArmourSelector
 
         private bool OutputResults(IEnumerable<ArmourPiece> keep, IEnumerable<ArmourPiece> delete)
         {
-            keep = keep.OrderBy(x => x.RowNumber);
-            delete = delete.OrderBy(x => x.RowNumber);
+            if (_sortResult)
+            {
+                keep = keep.OrderByDescending(x => _sortByPowerLevel ? x.PowerLevel : x.RowNumber);
+                delete = delete.OrderByDescending(x => _sortByPowerLevel ? x.PowerLevel : x.RowNumber);
+            }
 
             Console.WriteLine($"Keep: {keep.Count()}");
             Console.WriteLine();

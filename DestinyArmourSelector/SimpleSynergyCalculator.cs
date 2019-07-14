@@ -226,7 +226,6 @@ namespace DestinyArmourSelector
             "Heavy Lifting"
         };
 
-
         private static readonly Dictionary<string, HashSet<string>> _ammoFinderSynergies = new Dictionary<string, HashSet<string>>
         {
             { "Primary", _primarySynergy },
@@ -324,12 +323,12 @@ namespace DestinyArmourSelector
 
         private string ExtractWeaponClass(string secondaryPerk)
         {
-            return secondaryPerk.Substring(0, secondaryPerk.IndexOf("Ammo Finder"));
+            return secondaryPerk.Substring(0, secondaryPerk.IndexOf("Ammo Finder")).Trim();
         }
 
         private string ExtractWeaponName(string secondaryPerk)
         {
-            return secondaryPerk.Substring(0, secondaryPerk.LastIndexOf(' '));
+            return secondaryPerk.Substring(0, secondaryPerk.LastIndexOf(' ')).Trim();
         }
 
         private string MassagePrimaryPerk(string primaryPerk)

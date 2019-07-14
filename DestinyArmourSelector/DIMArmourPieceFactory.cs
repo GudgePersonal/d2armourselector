@@ -7,16 +7,16 @@ namespace DestinyArmourSelector
 
     public class DIMArmourPieceFactory : IArmourPieceFactory
     {
-        // 0                1             2                    3         4          5       6           7      8                        9                10          11      12        13    14      15     16          17            18        19        20          21     22 ...
-        // Name,            Hash,         Id,                  Tag,      Tier,      Type,   Equippable, Power, Masterwork Type,         Masterwork Tier, Owner,      Locked, Equipped, Year, Season, Event, DTR Rating, # of Reviews, Mobility, Recovery, Resilience, Notes, Perks
+        // 0                1             2                    3         4          5       6           7           8      9                        10               11          12      13        14    15      16     17          18            19        20        21          22     23...
+        // Name,            Hash,         Id,                  Tag,      Tier,      Type,   Source,     Equippable, Power, Masterwork Type,         Masterwork Tier, Owner,      Locked, Equipped, Year, Season, Event, DTR Rating, # of Reviews, Mobility, Recovery, Resilience, Notes, Perks
 
         private readonly int _nameIndex = 0;
         private readonly int _typeIndex = 5;
-        private readonly int _classIndex = 6;
-        private readonly int _powerIndex = 7;
-        private readonly int _elementIndex = 8;
-        private readonly int _masterworkIndex = 9;
-        private readonly int _perksIndex = 22;
+        private readonly int _classIndex = 7;
+        private readonly int _powerIndex = 8;
+        private readonly int _elementIndex = 9;
+        private readonly int _masterworkIndex = 10;
+        private readonly int _perksIndex = 23;
 
         private readonly ArmourType _armourType = ArmourType.Unknown;
 
