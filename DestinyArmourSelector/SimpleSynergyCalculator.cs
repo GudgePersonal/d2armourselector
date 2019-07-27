@@ -8,6 +8,8 @@ namespace DestinyArmourSelector
 
     class SimpleSynergyCalculator : ISynergyCalculator
     {
+        public static ISynergyCalculator Instance = new SimpleSynergyCalculator();
+
         private static readonly string _enhancedPrefix = "Enhanced ";
         private static readonly string _unflinchingAimPrefix = "Unflinching ";
 
@@ -82,7 +84,8 @@ namespace DestinyArmourSelector
             "Energy",
             "Power",
             "Pump Action",
-            "Oversize"
+            "Oversize",
+            "Large"
         };
 
         private static readonly HashSet<string> _grenadeLauncherSynergy = new HashSet<string>
@@ -92,6 +95,7 @@ namespace DestinyArmourSelector
             "Energy",
             "Power",
             "Oversize",
+            "Large",
             "Heavy Lifting"
         };
 
@@ -135,6 +139,7 @@ namespace DestinyArmourSelector
             "Rocket Launcher",
             "Power",
             "Oversize",
+            "Large",
             "Heavy Lifting"
         };
 
@@ -226,7 +231,6 @@ namespace DestinyArmourSelector
             "Heavy Lifting"
         };
 
-
         private static readonly Dictionary<string, HashSet<string>> _ammoFinderSynergies = new Dictionary<string, HashSet<string>>
         {
             { "Primary", _primarySynergy },
@@ -239,7 +243,7 @@ namespace DestinyArmourSelector
             return CalculateSynergyInternal(primaryPerks, secondaryPerks);
         }
 
-        private string CalculateAmmoFinderSynergy(int secondaryPerkIndex, string secondaryPerk, int primaryPerkIndex, string primaryPerk)
+        private static string CalculateAmmoFinderSynergy(int secondaryPerkIndex, string secondaryPerk, int primaryPerkIndex, string primaryPerk)
         {
             var sb = new StringBuilder();
 
@@ -249,7 +253,7 @@ namespace DestinyArmourSelector
             return sb.ToString();
         }
 
-        private string CalculateScavengerOrReservesSynergy(int secondaryPerkIndex, string secondaryPerk, int primaryPerkIndex, string primaryPerk)
+        private static string CalculateScavengerOrReservesSynergy(int secondaryPerkIndex, string secondaryPerk, int primaryPerkIndex, string primaryPerk)
         {
             var sb = new StringBuilder();
 
@@ -259,7 +263,7 @@ namespace DestinyArmourSelector
             return sb.ToString();
         }
 
-        private string CalculateSecondaryPerkSynergy(int secondaryPerkIndex, string secondaryPerk, int primaryPerkIndex, string primaryPerk)
+        private static string CalculateSecondaryPerkSynergy(int secondaryPerkIndex, string secondaryPerk, int primaryPerkIndex, string primaryPerk)
         {
             var sb = new StringBuilder();
 
@@ -278,7 +282,7 @@ namespace DestinyArmourSelector
             return sb.ToString();
         }
 
-        private string CalculateSecondaryPerkSynergy(int secondaryPerkIndex, int primaryPerkIndex, string primaryPerk, string key, Dictionary<string, HashSet<string>> dictionary)
+        private static string CalculateSecondaryPerkSynergy(int secondaryPerkIndex, int primaryPerkIndex, string primaryPerk, string key, Dictionary<string, HashSet<string>> dictionary)
         {
             var sb = new StringBuilder();
 
@@ -301,7 +305,7 @@ namespace DestinyArmourSelector
             return sb.ToString();
         }
 
-        private string CalculateSynergyInternal(PerkGroup primaryPerks, PerkGroup secondaryPerks)
+        private static string CalculateSynergyInternal(PerkGroup primaryPerks, PerkGroup secondaryPerks)
         {
             var sb = new StringBuilder();
 
@@ -322,17 +326,17 @@ namespace DestinyArmourSelector
             return sb.ToString().Trim('_');
         }
 
-        private string ExtractWeaponClass(string secondaryPerk)
+        private static string ExtractWeaponClass(string secondaryPerk)
         {
-            return secondaryPerk.Substring(0, secondaryPerk.IndexOf("Ammo Finder"));
+            return secondaryPerk.Substring(0, secondaryPerk.IndexOf("Ammo Finder")).Trim();
         }
 
-        private string ExtractWeaponName(string secondaryPerk)
+        private static string ExtractWeaponName(string secondaryPerk)
         {
-            return secondaryPerk.Substring(0, secondaryPerk.LastIndexOf(' '));
+            return secondaryPerk.Substring(0, secondaryPerk.LastIndexOf(' ')).Trim();
         }
 
-        private string MassagePrimaryPerk(string primaryPerk)
+        private static string MassagePrimaryPerk(string primaryPerk)
         {
             if (primaryPerk.StartsWith(_unflinchingAimPrefix))
             {
