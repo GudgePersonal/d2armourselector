@@ -150,6 +150,13 @@ namespace DestinyArmourSelector
             "Bow"
         };
 
+        private static readonly HashSet<string> _largeWeapons = new HashSet<string>
+        {
+            "Rocket Launcher",
+            "Grenade Launcher",
+            "Shotgun",
+        };
+
         private static readonly HashSet<string> _lightArmsWeapons = new HashSet<string>
         {
             "Hand Cannon",
@@ -293,7 +300,7 @@ namespace DestinyArmourSelector
                 }
             }
 
-            return new ArmourPiece(armourType, new SimpleSynergyCalculator())
+            return new ArmourPiece(armourType, SimpleSynergyCalculator.Instance)
             {
                 BasePerks = basePerks,
                 Class = characterClass,
