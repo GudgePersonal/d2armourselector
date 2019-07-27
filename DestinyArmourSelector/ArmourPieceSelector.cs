@@ -1,5 +1,6 @@
 ﻿// Copyright Small & Fast 2018
 
+
 namespace DestinyArmourSelector
 {
     using System.Collections.Generic;
@@ -32,6 +33,27 @@ namespace DestinyArmourSelector
             pieces = pieces.OrderByDescending(x => x.Synergy.Length).ThenByDescending(x => x.PowerLevel);
 
             foreach (ArmourPiece piece in pieces)
+            {
+                if (ShouldDelete(piece))
+                {
+                    toDelete.Add(piece);
+                }
+                else
+                {
+                    toKeep.Add(piece);
+
+                    if (ShouldIncludePerks(piece)) // Don't add perks from exotics or low light items into the pool
+                    {
+                        AddPerks(piece);
+                    }
+                }
+            }
+
+            var toKeepTemp = toKeep.OrderByDescending(x => x.PowerLevel).ToList();
+            toKeep.Clear();
+            _perksFound.Clear();
+
+            foreach (ArmourPiece piece in toKeepTemp)
             {
                 if (ShouldDelete(piece))
                 {
