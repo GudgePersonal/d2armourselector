@@ -30,6 +30,7 @@ namespace DestinyArmourSelector
             var toDelete = new List<ArmourPiece>();
 
             pieces = pieces.OrderByDescending(x => x.Synergy.Length).ThenByDescending(x => x.PowerLevel);
+            pieces = PickOneOfEach(pieces, toKeep);
 
             foreach (ArmourPiece piece in pieces)
             {
@@ -49,6 +50,28 @@ namespace DestinyArmourSelector
             }
 
             return (toKeep, toDelete);
+        }
+
+        private IEnumerable<ArmourPiece> PickOneOfEach(IEnumerable<ArmourPiece> pieces, IList<ArmourPiece> toKeep)
+        {
+            var names = new HashSet<string>();
+            var temp = new HashSet<ArmourPiece>(pieces);
+
+            foreach(ArmourPiece piece in pieces)
+            {
+                if(!names.Contains(piece.Name))
+                {
+                    names.Add(piece.Name);
+                    toKeep.Add(piece);
+
+                    if(ShouldIncludePerks(piece))
+                    {
+                        AddPerks(piece);
+                    }
+                }
+            }
+
+            return temp.Except(toKeep);
         }
 
         private void AddPerks(ArmourPiece piece)
@@ -76,12 +99,12 @@ namespace DestinyArmourSelector
 
         private bool ShouldIncludePerks(ArmourPiece piece)
         {
-            if (piece.Name.StartsWith("Memory Of Cayde "))
+            if (piece.Name.StartsWith("Memory Of Cayde"))
             {
                 return false;
             }
 
-            if (piece.MasterWorkLevel == 0)
+            if(piece.Tier != "Legendary")
             {
                 return false;
             }

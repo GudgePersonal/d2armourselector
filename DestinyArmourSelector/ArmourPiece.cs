@@ -36,6 +36,8 @@ namespace DestinyArmourSelector
 
         public PerkGroup SecondaryPerks { get; set; }
 
+        public string Tier { get; set; }
+
         public string Synergy
         {
             get

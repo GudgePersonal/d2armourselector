@@ -3,6 +3,7 @@
 namespace DestinyArmourSelector
 {
     using Interfaces;
+    using System;
     using System.Collections.Generic;
 
     public class DIMArmourPieceFactory : IArmourPieceFactory
@@ -11,6 +12,7 @@ namespace DestinyArmourSelector
         // Name,            Hash,         Id,                  Tag,      Tier,      Type,   Source,     Equippable, Power, Masterwork Type,         Masterwork Tier, Owner,      Locked, Equipped, Year, Season, Event, DTR Rating, # of Reviews, Mobility, Recovery, Resilience, Notes, Perks
 
         private readonly int _nameIndex = 0;
+        private readonly int _tierIndex = 4;
         private readonly int _typeIndex = 5;
         private readonly int _classIndex = 7;
         private readonly int _powerIndex = 8;
@@ -224,6 +226,8 @@ namespace DestinyArmourSelector
             int masterWork = GetMasterWorkLevel(tokens);
             Element element = GetMasterWorkElement(tokens);
 
+            string tier = GetTier(tokens);
+
             var temp = new List<string>();
 
             for (int i = _perksIndex; i < tokens.Length; ++i)
@@ -311,6 +315,7 @@ namespace DestinyArmourSelector
                 PrimaryPerks = primaryPerks,
                 RowNumber = rowNumber,
                 SecondaryPerks = secondaryPerks,
+                Tier = tier
             };
         }
 
@@ -446,10 +451,15 @@ namespace DestinyArmourSelector
         {
             return tokens[_nameIndex].Trim('"');
         }
-
+        
         private int GetPowerLevel(string[] tokens)
         {
             return int.Parse(tokens[_powerIndex]);
+        }
+
+        private string GetTier(string[] tokens)
+        {
+            return tokens[_tierIndex];
         }
 
         private void TrimPerkTokens(string[] perkTokens)
